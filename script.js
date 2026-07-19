@@ -20,15 +20,20 @@
     if (!SHEET_ENDPOINT) return;
     try { payload.page = location.href; } catch (e) {}
     var body = JSON.stringify(payload);
-    // sendBeacon is the most reliable — it delivers even as we open WhatsApp.
+    // fetch + keepalive reaches Apps Script reliably on EVERY submit (sendBeacon
+    // silently drops repeat sends) and still survives the jump to WhatsApp/dialer.
+    try {
+      fetch(SHEET_ENDPOINT, {
+        method: "POST", mode: "no-cors", keepalive: true,
+        headers: { "Content-Type": "text/plain;charset=UTF-8" },
+        body: body
+      });
+      return;
+    } catch (e) {}
     try {
       if (navigator.sendBeacon) {
         navigator.sendBeacon(SHEET_ENDPOINT, new Blob([body], { type: "text/plain;charset=UTF-8" }));
-        return;
       }
-    } catch (e) {}
-    try {
-      fetch(SHEET_ENDPOINT, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=UTF-8" }, body: body });
     } catch (e) {}
   }
 
