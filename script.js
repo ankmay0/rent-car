@@ -257,9 +257,9 @@
   /* ---------- Filter chips ---------- */
   var filter = document.getElementById("fleetFilter");
   filter.addEventListener("click", function (e) {
-    var chip = e.target.closest(".chip");
+    var chip = e.target.closest(".tab");
     if (!chip) return;
-    filter.querySelectorAll(".chip").forEach(function (c) { c.classList.remove("active"); });
+    filter.querySelectorAll(".tab").forEach(function (c) { c.classList.remove("active"); });
     chip.classList.add("active");
     render(chip.getAttribute("data-cat"));
   });
